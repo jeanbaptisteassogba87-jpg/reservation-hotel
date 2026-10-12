@@ -5,6 +5,7 @@ import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
 import { RoomCategoriesModule } from './room-categories/room-categories.module.js';
 import { RoomsModule } from './rooms/rooms.module.js';
+import { UsersModule } from './users/users.module.js';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { RoomsModule } from './rooms/rooms.module.js';
     }),
     RoomCategoriesModule,
     RoomsModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
