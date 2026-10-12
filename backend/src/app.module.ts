@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
+import { RoomCategoriesModule } from './room-categories/room-categories.module.js';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { AppService } from './app.service.js';
       autoLoadEntities: true,
       synchronize: true,
     }),
+    RoomCategoriesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
