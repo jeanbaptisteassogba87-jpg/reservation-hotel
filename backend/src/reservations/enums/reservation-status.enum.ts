@@ -1,0 +1,8 @@
+export enum ReservationStatus {
+  EN_ATTENTE = 'EN_ATTENTE',
+  CONFIRMEE = 'CONFIRMEE',
+  REFUSEE = 'REFUSEE',
+  ANNULEE = 'ANNULEE',
+  EN_COURS = 'EN_COURS',
+  TERMINEE = 'TERMINEE',
+}
