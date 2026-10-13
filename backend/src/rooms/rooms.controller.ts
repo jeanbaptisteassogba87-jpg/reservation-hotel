@@ -40,6 +40,7 @@ export class RoomsController {
 
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.ADMIN)
+  @Patch(':id')
   update(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateRoomDto) {
     return this.service.update(id, dto);
   }
