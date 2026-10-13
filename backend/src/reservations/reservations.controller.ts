@@ -60,6 +60,34 @@ export class ReservationsController {
 
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.ADMIN, Role.RECEPTIONNISTE)
+  @Patch(':id/confirm')
+  confirm(
+    @Param('id', ParseIntPipe) id: number,
+    @Req() req: { user: { userId: number } },
+  ) {
+    return this.service.confirm(id, req.user.userId);
+  }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN, Role.RECEPTIONNISTE)
+  @Patch(':id/refuse')
+  refuse(@Param('id', ParseIntPipe) id: number) {
+    return this.service.refuse(id);
+  }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN, Role.RECEPTIONNISTE)
+  @Patch(':id/check-in')
+  checkIn(@Param('id', ParseIntPipe) id: number) {
+    return this.service.checkIn(id);
+  }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN, Role.RECEPTIONNISTE)
+  @Patch(':id/check-out')
+  checkOut(@Param('id', ParseIntPipe) id: number) {
+    return this.service.checkOut(id);
+  }
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.service.findOne(id);

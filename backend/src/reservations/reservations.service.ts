@@ -186,4 +186,47 @@ export class ReservationsService {
     });
     return this.findOne(id);
   }
+
+  private async assertStatus(id: number, allowed: ReservationStatus[]) {
+    const reservation = await this.findOne(id);
+    if (!allowed.includes(reservation.statut)) {
+      throw new BadRequestException(
+        `Action impossible pour une réservation ${reservation.statut}`,
+      );
+    }
+    return reservation;
+  }
+
+  async confirm(id: number, userId: number) {
+    await this.assertStatus(id, [ReservationStatus.EN_ATTENTE]);
+    await this.reservationRepo.update(id, {
+      statut: ReservationStatus.CONFIRMEE,
+      confirmePar: { id: userId },
+    });
+    return this.findOne(id);
+  }
+
+  async refuse(id: number) {
+    await this.assertStatus(id, [ReservationStatus.EN_ATTENTE]);
+    await this.reservationRepo.update(id, {
+      statut: ReservationStatus.REFUSEE,
+    });
+    return this.findOne(id);
+  }
+
+  async checkIn(id: number) {
+    await this.assertStatus(id, [ReservationStatus.CONFIRMEE]);
+    await this.reservationRepo.update(id, {
+      statut: ReservationStatus.EN_COURS,
+    });
+    return this.findOne(id);
+  }
+
+  async checkOut(id: number) {
+    await this.assertStatus(id, [ReservationStatus.EN_COURS]);
+    await this.reservationRepo.update(id, {
+      statut: ReservationStatus.TERMINEE,
+    });
+    return this.findOne(id);
+  }
 }
