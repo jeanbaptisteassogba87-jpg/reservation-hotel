@@ -14,6 +14,7 @@ import { Room } from '../rooms/entities/room.entity.js';
 import { User } from '../users/entities/user.entity.js';
 import { Role } from '../users/enums/role.enum.js';
 import { CreateReservationDto } from './dto/create-reservation.dto.js';
+import { PaymentsService } from '../payments/payments.service.js';
 
 const STATUTS_BLOQUANTS = [
   ReservationStatus.EN_ATTENTE,
@@ -30,6 +31,7 @@ export class ReservationsService {
     private readonly ligneRepo: Repository<ReservationChambre>,
     @InjectRepository(Room) private readonly roomRepo: Repository<Room>,
     @InjectRepository(User) private readonly userRepo: Repository<User>,
+    private readonly paymentsService: PaymentsService,
   ) {}
 
   private checkDates(arrivee: string, depart: string) {
@@ -199,6 +201,13 @@ export class ReservationsService {
 
   async confirm(id: number, userId: number) {
     await this.assertStatus(id, [ReservationStatus.EN_ATTENTE]);
+    const reservation = await this.findOne(id);
+    const paid = await this.paymentsService.totalPaid(id);
+    if (paid < reservation.prixTotal) {
+      throw new BadRequestException(
+        'La réservation doit être entièrement payée avant la confirmation',
+      );
+    }
     await this.reservationRepo.update(id, {
       statut: ReservationStatus.CONFIRMEE,
       confirmePar: { id: userId },

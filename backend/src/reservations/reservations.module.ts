@@ -6,10 +6,12 @@ import { Reservation } from './entities/reservation.entity.js';
 import { ReservationChambre } from './entities/reservation-chambre.entity.js';
 import { Room } from '../rooms/entities/room.entity.js';
 import { User } from '../users/entities/user.entity.js';
+import { PaymentsModule } from '../payments/payments.module.js';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Reservation, ReservationChambre, Room, User]),
+    PaymentsModule,
   ],
   controllers: [ReservationsController],
   providers: [ReservationsService],
