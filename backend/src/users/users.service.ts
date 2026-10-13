@@ -12,7 +12,7 @@ export class UsersService {
     private readonly repo: Repository<User>,
   ) {}
 
-  async create(dto: CreateUserDto): Promise<User> {
+  async create(dto: Partial<User>): Promise<User> {
     const user = this.repo.create(dto);
     return await this.repo.save(user);
   }
@@ -30,12 +30,12 @@ export class UsersService {
   }
 
   async findByEmail(email: string): Promise<User | null> {
-  return await this.repo
-    .createQueryBuilder('user')
-    .addSelect('user.motDePasse')
-    .where('user.email = :email', { email })
-    .getOne();
-}
+    return await this.repo
+      .createQueryBuilder('user')
+      .addSelect('user.motDePasse')
+      .where('user.email = :email', { email })
+      .getOne();
+  }
 
   async update(id: number, dto: UpdateUserDto): Promise<User> {
     const user = await this.findOne(id);
