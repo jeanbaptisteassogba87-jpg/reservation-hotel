@@ -29,10 +29,7 @@ export class RoomCategoriesService {
     return category;
   }
 
-  async update(
-    id: number,
-    dto: UpdateRoomCategoryDto,
-  ): Promise<RoomCategory> {
+  async update(id: number, dto: UpdateRoomCategoryDto): Promise<RoomCategory> {
     const category = await this.findOne(id);
     Object.assign(category, dto);
     return await this.repo.save(category);
