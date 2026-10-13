@@ -4,6 +4,7 @@ import {
   Get,
   Param,
   ParseIntPipe,
+  Patch,
   Post,
   Query,
   Req,
@@ -27,12 +28,34 @@ export class ReservationsController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Get('me')
+  findMine(@Req() req: { user: { userId: number } }) {
+    return this.service.findMine(req.user.userId);
+  }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN, Role.RECEPTIONNISTE)
+  @Get()
+  findAll() {
+    return this.service.findAll();
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Post()
   create(
     @Body() dto: CreateReservationDto,
     @Req() req: { user: { userId: number; role: Role } },
   ) {
     return this.service.create(dto, req.user);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch(':id/cancel')
+  cancel(
+    @Param('id', ParseIntPipe) id: number,
+    @Req() req: { user: { userId: number; role: Role } },
+  ) {
+    return this.service.cancel(id, req.user);
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
