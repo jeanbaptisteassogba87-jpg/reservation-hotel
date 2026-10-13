@@ -24,9 +24,9 @@ export class UsersController {
   constructor(private readonly service: UsersService) {}
 
   @Post()
-create(@Body() dto: CreateUserDto) {
-  return this.service.create({ ...dto, role: Role.CLIENT, aUnCompte: false });
-}
+  create(@Body() dto: CreateUserDto) {
+    return this.service.create({ ...dto, role: Role.CLIENT, aUnCompte: false });
+  }
 
   @Get()
   findAll() {
