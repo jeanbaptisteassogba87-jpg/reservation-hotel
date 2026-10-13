@@ -3,6 +3,7 @@ import {
   ConflictException,
   Injectable,
   NotFoundException,
+  ForbiddenException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
@@ -147,5 +148,42 @@ export class ReservationsService {
       throw new NotFoundException(`Reservation ${id} not found`);
     }
     return reservation;
+  }
+
+  async findMine(userId: number) {
+    return this.reservationRepo.find({
+      where: { client: { id: userId } },
+      relations: { chambres: { room: { category: true } } },
+      order: { dateCreation: 'DESC' },
+    });
+  }
+
+  async findAll() {
+    return this.reservationRepo.find({
+      relations: { client: true, chambres: { room: true } },
+      order: { dateArrivee: 'ASC' },
+    });
+  }
+
+  async cancel(id: number, user: { userId: number; role: Role }) {
+    const reservation = await this.findOne(id);
+    if (user.role === Role.CLIENT && reservation.client.id !== user.userId) {
+      throw new ForbiddenException(
+        'Vous ne pouvez annuler que vos réservations',
+      );
+    }
+    const annulables = [
+      ReservationStatus.EN_ATTENTE,
+      ReservationStatus.CONFIRMEE,
+    ];
+    if (!annulables.includes(reservation.statut)) {
+      throw new BadRequestException(
+        `Impossible d'annuler une réservation ${reservation.statut}`,
+      );
+    }
+    await this.reservationRepo.update(id, {
+      statut: ReservationStatus.ANNULEE,
+    });
+    return this.findOne(id);
   }
 }
