@@ -1,122 +1,65 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+import { Routes, Route, Link } from 'react-router-dom';
+import Navbar from './components/Navbar';
+import PrivateRoute from './components/PrivateRoute';
+import Home from './pages/Home';
+import Search from './pages/Search';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import MyReservations from './pages/MyReservations';
+import Staff from './pages/Staff';
+import AdminRooms from './pages/AdminRooms';
+import AdminCategories from './pages/AdminCategories';
+import AdminUsers from './pages/AdminUsers';
+import AdminStats from './pages/AdminStats';
+import StaffReservations from './pages/StaffReservations';
+import StaffPlanning from './pages/StaffPlanning';
+import StaffNewReservation from './pages/StaffNewReservation';
+import StaffClients from './pages/StaffClients';
+import Profile from './pages/Profile';
+import SiteFooter from './components/SiteFooter';
+import WhatsAppButton from './components/WhatsAppButton';
 
-function App() {
-  const [count, setCount] = useState(0)
-
+export default function App() {
   return (
     <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
+      <Navbar />
+      <main>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/search" element={<Search />} />
+          <Route path="/reserve" element={<Search />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route
+            path="/my-reservations"
+            element={
+              <PrivateRoute>
+                <MyReservations />
+              </PrivateRoute>
+            }
+          />
+          <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
+          <Route
+            path="/staff"
+            element={
+              <PrivateRoute roles={['RECEPTIONNISTE', 'ADMIN']}>
+                <Staff />
+              </PrivateRoute>
+            }
+          />
+          <Route path="/staff/reservations" element={<PrivateRoute roles={['RECEPTIONNISTE', 'ADMIN']}><StaffReservations /></PrivateRoute>} />
+          <Route path="/staff/planning" element={<PrivateRoute roles={['RECEPTIONNISTE', 'ADMIN']}><StaffPlanning /></PrivateRoute>} />
+          <Route path="/staff/new-reservation" element={<PrivateRoute roles={['RECEPTIONNISTE', 'ADMIN']}><StaffNewReservation /></PrivateRoute>} />
+          <Route path="/staff/clients" element={<PrivateRoute roles={['RECEPTIONNISTE', 'ADMIN']}><StaffClients /></PrivateRoute>} />
+          <Route path="/admin/rooms" element={<PrivateRoute roles={['ADMIN']}><AdminRooms /></PrivateRoute>} />
+          <Route path="/admin/categories" element={<PrivateRoute roles={['ADMIN']}><AdminCategories /></PrivateRoute>} />
+          <Route path="/admin/users" element={<PrivateRoute roles={['ADMIN']}><AdminUsers /></PrivateRoute>} />
+          <Route path="/admin/stats" element={<PrivateRoute roles={['ADMIN']}><AdminStats /></PrivateRoute>} />
+          <Route path="*" element={<div className="container error-page"><div className="eyebrow">Oups, mauvaise adresse</div><h1>Cette page n’existe pas.</h1><Link className="text-link" to="/">Retourner à l’accueil →</Link></div>} />
+        </Routes>
+      </main>
+      <SiteFooter />
+      <WhatsAppButton />
     </>
-  )
+  );
 }
-
-export default App
